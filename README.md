@@ -105,7 +105,18 @@ manager (systemd, supervisor, whatever).
 
 ## Using it
 
-1. Click **Upload PDF** in the sidebar. Pick something short.
+Two test PDFs ship with the repo in `samples/`. They cover the two
+shapes the extractor handles:
+
+| file | pages | what it is | what to expect |
+|---|---|---|---|
+| `samples/finance.pdf`   | 3 | sample financial statement (tabular) | `org` / `metric` / `money` / `date` nodes connected by `reports`, `includes`, `value`, `as-of` edges |
+| `samples/rohini.pdf`    | 8 | LED-physics study notes (prose)      | `topic` nodes with verb-labelled edges from dependency-parsed SVO triples (`emit`, `recombine`, `cross`, ...) |
+
+Steps:
+
+1. Click **Upload PDF** in the sidebar. Pick one of the samples above,
+   or any short PDF of your own.
 2. The backend parses it (≈1–3s for a few pages) and returns a graph.
 3. Click a node to focus the source text panel on the sentences that
    mention it. Click an edge to focus the single sentence that produced it.
@@ -113,7 +124,8 @@ manager (systemd, supervisor, whatever).
    Double-click a node or edge to rename it. Select something and hit
    **Delete** to remove it.
 5. Type in the search box to filter, the canvas dims non-matches and
-   centres on the top hit.
+   centres on the top hit. Try `revenue` on the finance PDF or
+   `electron` on the rohini PDF.
 
 Edits live only in the graph. The text panel never changes.
 
@@ -164,7 +176,9 @@ src/                        React: Vite + TypeScript + Tailwind
     search.ts               degree-weighted node search
 docs/
   DOKUMENTACIO.md           step-by-step pipeline explanation (Hungarian)
-samples/                    drop test PDFs here (gitignored)
+samples/
+  finance.pdf               3-page financial statement (tabular content)
+  rohini.pdf                8 pages of LED physics notes (prose content)
 ```
 
 ## How the extraction actually works
