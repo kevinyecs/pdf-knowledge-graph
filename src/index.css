@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* React Flow tweaks to fit the dark theme */
+.react-flow__node {
+  font-family: inherit;
+}
+
+.react-flow__edge-path {
+  stroke: #5c5c68;
+  stroke-width: 1.4;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:focus .react-flow__edge-path {
+  stroke: #a892ff;
+}
+
+.react-flow__edge-text {
+  fill: #b6b6c0;
+  font-size: 10px;
+}
+
+.react-flow__edge-textbg {
+  fill: #1a1a1f;
+}
+
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #3d3d46;
+  border: 1px solid #27272d;
+}
+
+.react-flow__controls button {
+  background: #1a1a1f;
+  color: #d9d9df;
+  border-bottom: 1px solid #27272d;
+}
+
+.react-flow__controls button:hover {
+  background: #27272d;
+}
+
+.react-flow__minimap {
+  background: #101014;
+}
+
+/* Subtle scrollbars */
+.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: #27272d; border-radius: 4px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+mark.kg-hit {
+  background: #4a3a92;
+  color: #fff;
+  padding: 0 2px;
+  border-radius: 2px;
+}
