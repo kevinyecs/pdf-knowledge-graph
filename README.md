@@ -12,13 +12,14 @@ There's a Hungarian walkthrough of the whole pipeline at
 
 ## Setup
 
-Pick the block that matches your OS and paste it line by line. Every
-command assumes you start in your home directory; `cd` lines are
-included so you don't have to track which folder you're in.
+Tested on Ubuntu / WSL and macOS. Every command below is meant to be
+copy-pasted line by line in a single terminal, starting from your home
+directory. `cd` lines are included so you don't have to track which
+folder you're in.
 
-### Prerequisites (all platforms)
+### Prerequisites
 
-- **Python 3.10+** — check: `python3 --version` (Windows: `python --version`)
+- **Python 3.10+** — check: `python3 --version`
 - **Node.js 18+** — check: `node --version`
 - **npm** — ships with Node, check: `npm --version`
 - **git** — check: `git --version`
@@ -26,15 +27,13 @@ included so you don't have to track which folder you're in.
 - A short PDF to test with (1–10 mostly-text pages). Two are bundled in
   `samples/`, so you don't need your own to verify the install.
 
-On Debian/Ubuntu/WSL only, install the venv package once if missing:
+On Debian/Ubuntu/WSL, install the venv package once if missing:
 
 ```bash
 sudo apt update && sudo apt install -y python3-venv
 ```
 
----
-
-### One-time install — macOS / Linux / WSL
+### One-time install
 
 Open a terminal, copy the whole block, paste, hit Enter. It clones the
 repo, creates a venv, installs the Python and Node dependencies, and
@@ -55,29 +54,6 @@ npm install
 
 When it finishes you should be back at a prompt with `(.venv)` at the
 start. The whole thing takes 2–4 minutes on a normal connection.
-
-### One-time install — Windows (PowerShell)
-
-Open PowerShell, paste the block, hit Enter.
-
-```powershell
-git clone https://github.com/kevinyecs/pdf-knowledge-graph.git
-cd pdf-knowledge-graph
-
-python -m venv backend\.venv
-backend\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
-
-npm install
-```
-
-If PowerShell blocks the activation script, run this once and try again:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
 
 > The root `requirements.txt` is a one-line pointer to
 > `backend/requirements.txt`, so `pip install -r requirements.txt` works
@@ -113,19 +89,11 @@ If both succeed, you're good.
 You need **two terminals**, both started from the project root
 (`pdf-knowledge-graph/`). Leave them running side by side.
 
-### Terminal 1 — backend (macOS / Linux / WSL)
+### Terminal 1 — backend
 
 ```bash
 cd ~/pdf-knowledge-graph                  # or wherever you cloned it
 source backend/.venv/bin/activate
-python -m uvicorn app:app --reload --port 8000 --app-dir backend
-```
-
-### Terminal 1 — backend (Windows PowerShell)
-
-```powershell
-cd $HOME\pdf-knowledge-graph              # or wherever you cloned it
-backend\.venv\Scripts\Activate.ps1
 python -m uvicorn app:app --reload --port 8000 --app-dir backend
 ```
 
@@ -137,10 +105,10 @@ Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 
 Leave this terminal open.
 
-### Terminal 2 — frontend (all platforms)
+### Terminal 2 — frontend
 
 ```bash
-cd ~/pdf-knowledge-graph                  # Windows: cd $HOME\pdf-knowledge-graph
+cd ~/pdf-knowledge-graph
 npm run dev
 ```
 
