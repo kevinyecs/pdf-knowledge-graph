@@ -12,83 +12,144 @@ There's a Hungarian walkthrough of the whole pipeline at
 
 ## Setup
 
-### Prerequisites
+Pick the block that matches your OS and paste it line by line. Every
+command assumes you start in your home directory; `cd` lines are
+included so you don't have to track which folder you're in.
 
-- **Python 3.10+** (check with `python3 --version`)
-- **Node.js 18+** (check with `node --version`)
-- **npm** (ships with Node)
-- ~150 MB of disk for the spaCy model + node_modules
-- A short PDF to test with. Anything 1–10 pages of mostly-text works;
-  scanned image PDFs won't (no OCR step).
+### Prerequisites (all platforms)
 
-On Debian/Ubuntu/WSL you may also need `python3-venv`:
+- **Python 3.10+** — check: `python3 --version` (Windows: `python --version`)
+- **Node.js 18+** — check: `node --version`
+- **npm** — ships with Node, check: `npm --version`
+- **git** — check: `git --version`
+- ~150 MB of disk for the spaCy model + `node_modules`
+- A short PDF to test with (1–10 mostly-text pages). Two are bundled in
+  `samples/`, so you don't need your own to verify the install.
+
+On Debian/Ubuntu/WSL only, install the venv package once if missing:
 
 ```bash
-sudo apt install python3-venv
+sudo apt update && sudo apt install -y python3-venv
 ```
 
-### One-time install
+---
 
-Clone, then set the backend up first:
+### One-time install — macOS / Linux / WSL
+
+Open a terminal, copy the whole block, paste, hit Enter. It clones the
+repo, creates a venv, installs the Python and Node dependencies, and
+downloads the spaCy model.
 
 ```bash
 git clone https://github.com/kevinyecs/pdf-knowledge-graph.git
 cd pdf-knowledge-graph
 
-# --- backend ---
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
-cd ..
 
-# --- frontend ---
 npm install
 ```
 
-If you can't make a venv (e.g. the Debian-flavoured "externally-managed
-environment" error), install with `pip install --user --break-system-packages`
-instead. It's not pretty but it works.
+When it finishes you should be back at a prompt with `(.venv)` at the
+start. The whole thing takes 2–4 minutes on a normal connection.
 
-### Verify the install
+### One-time install — Windows (PowerShell)
+
+Open PowerShell, paste the block, hit Enter.
+
+```powershell
+git clone https://github.com/kevinyecs/pdf-knowledge-graph.git
+cd pdf-knowledge-graph
+
+python -m venv backend\.venv
+backend\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+
+npm install
+```
+
+If PowerShell blocks the activation script, run this once and try again:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+> The root `requirements.txt` is a one-line pointer to
+> `backend/requirements.txt`, so `pip install -r requirements.txt` works
+> from the project root. The actual pinned dependencies live in
+> `backend/requirements.txt`.
+
+If you cannot create a venv (Debian "externally-managed environment"),
+swap the two `pip install` lines for:
 
 ```bash
-# backend smoke test, should print a graph summary
-python3 -c "import sys; sys.path.insert(0,'backend'); from extractor import extract; from pdf_io import read_pdf; print('backend ok')"
+pip install --user --break-system-packages -r requirements.txt
+pip install --user --break-system-packages https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+```
 
-# frontend type check + production build
+### Verify the install (optional but recommended)
+
+From the project root, with the venv active:
+
+```bash
+# backend smoke test — should print: backend ok
+python -c "import sys; sys.path.insert(0,'backend'); from extractor import extract; from pdf_io import read_pdf; print('backend ok')"
+
+# frontend type check + production build — should end with "✓ built in …"
 npm run build
 ```
+
+If both succeed, you're good.
 
 ---
 
 ## Running the app
 
-You'll need two terminals.
+You need **two terminals**, both started from the project root
+(`pdf-knowledge-graph/`). Leave them running side by side.
 
-**Terminal 1 (backend):**
+### Terminal 1 — backend (macOS / Linux / WSL)
 
 ```bash
-cd backend
-source .venv/bin/activate                 # if you made a venv
-python -m uvicorn app:app --reload --port 8000
+cd ~/pdf-knowledge-graph                  # or wherever you cloned it
+source backend/.venv/bin/activate
+python -m uvicorn app:app --reload --port 8000 --app-dir backend
 ```
 
-You should see `Uvicorn running on http://127.0.0.1:8000`.
+### Terminal 1 — backend (Windows PowerShell)
 
-**Terminal 2 (frontend):**
+```powershell
+cd $HOME\pdf-knowledge-graph              # or wherever you cloned it
+backend\.venv\Scripts\Activate.ps1
+python -m uvicorn app:app --reload --port 8000 --app-dir backend
+```
+
+You should see:
+
+```
+Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+
+Leave this terminal open.
+
+### Terminal 2 — frontend (all platforms)
 
 ```bash
+cd ~/pdf-knowledge-graph                  # Windows: cd $HOME\pdf-knowledge-graph
 npm run dev
 ```
 
-Open the URL Vite prints (usually `http://localhost:5173`). Vite proxies
-`/api/*` to the backend on port 8000, so the browser only ever talks to
-one origin.
+Vite prints a URL, typically `http://localhost:5173/`. Open it in your
+browser. The sidebar shows a **green dot** when the backend is reachable,
+**red** when it isn't. Vite proxies `/api/*` to `http://127.0.0.1:8000`,
+so the browser only ever talks to one origin.
 
-The sidebar shows a green dot when the backend is reachable, red when it
-isn't.
+To stop everything, press `Ctrl+C` in each terminal.
 
 ### Production build
 
